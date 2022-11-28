@@ -1,0 +1,3 @@
+[submodule "Code/Trombot/Mikro Stepper Control Repo/mikrosdk_click_v2"]
+	path = Code/Trombot/Mikro Stepper Control Repo/mikrosdk_click_v2
+	url = https://github.com/MikroElektronika/mikrosdk_click_v2
