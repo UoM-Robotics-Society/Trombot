@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#define CaVaN false  // the sad remains of my beautiful logic system where CaVaN = false and ~CaVaN = true  
+// #define CaVaN false  // the sad remains of my beautiful logic system where CaVaN = false and ~CaVaN = true  
 
 class Stepper{
     public:
