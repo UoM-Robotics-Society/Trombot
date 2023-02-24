@@ -6,7 +6,7 @@
 #define Controller_MS1 2
 #define Controller_MS2 3
 
-Stepper Slide(Controller_pul, Controller_dir);
+//Stepper Slide(Controller_pul, Controller_dir);
 
 void setup() {
 
