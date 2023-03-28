@@ -13,9 +13,14 @@ class Stepper{
         //@param pulse_pin     : arduino pin connected of step/pulse/pul of the driver
         //@param direction_pin : arduino pin connected of direction/dir of the driver
 
+
+        void setupstep(bool dir, resolution resolution);
+
+        void step(unsigned int period)
+
         void move(double error, bool dir, resolution resolution, unsigned int period);
         //Basic input to drive the stepper. moves a number of steps then microsteps. if not within resolution it will move the closest amount of steps that is capable below the inputted number  
-        //@param num : number of steps you want to move as a double where 1.0 is a full step
+        //@param num : number of steps you want to move as a double where 1.0 is a FULL step
         //@param dir : Diretion of steps as a bool value 0 (forward) or 1 (backward) the physical direction orientation depends on the motors wiring so be careful
         //@param resolution : enum input of the available resolutions of microstepping ("full", "half", "quarter" and "eigth")
         //@param period: time between steps in microseconds, if no value is input this value defaults to 5 microseconds. This has a software lower limit of 1 microsecond
@@ -45,10 +50,17 @@ class Stepper{
         double getpos();
         // returns the current position of the stepper as double
 
+
+        void newtarget(double pos)
+
+
+        void fullsteptowardstarget()
+        // Moves one step towards target
+
     private:
-        double current_pos, calc, microsteps, fraction, timeperiod;
-        int newnum, pulse_pin, direction_pin, microstep1_pin, microstep2_pin;
-        unsigned int sub_steps, fullsteps, period, glide_steps;
-        bool direction;
+        double current_pos, calc, fraction, target;
+        int pulse_pin, direction_pin, microstep1_pin, microstep2_pin;
+        unsigned int  period;
+        bool direction, targetchange;
 
 };

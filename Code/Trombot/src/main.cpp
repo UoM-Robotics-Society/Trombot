@@ -79,4 +79,4 @@ void lm_platform_features() {
     lm_feature_note_channel(0, 64, 64);
     lm_feature_offset(stepper_slowness_amount);
 }
-const char *lm_platform_name = "Tambourine;Ver1.00;";
+const char *lm_platform_name = "Trombot;Ver1.00;";
