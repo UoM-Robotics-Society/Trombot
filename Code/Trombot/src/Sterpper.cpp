@@ -13,31 +13,17 @@
         current_pos = 0;
     }
 
-    void Stepper::move(double error, bool dir, resolution resolution, unsigned int timeperiod = 5){
-
-        fullsteps = (unsigned int) error;
-        microsteps = error - fullsteps;
-        period = (unsigned int) timeperiod;
-
+    void Stepper::setupstep(bool dir,resolution resolution){
         digitalWrite(pulse_pin, LOW);
+
         if(dir) digitalWrite(direction_pin, HIGH);      // Set direction
         else digitalWrite(direction_pin, LOW);
 
-        digitalWrite(microstep1_pin, HIGH);             //Set to full steps
-        digitalWrite(microstep2_pin, HIGH);
-        delayMicroseconds(10);
-
-        for(int i=0; i++; i<fullsteps){
-            digitalWrite(pulse_pin, HIGH);              //pulse to trigger motion 
-            delayMicroseconds(period);
-            digitalWrite(pulse_pin, LOW);
-            delayMicroseconds(period);
-            if(dir) current_pos++;                      //update current position tracking
-            else current_pos--;
-        }
-
         switch(resolution){
             case full:
+                digitalWrite(microstep1_pin, HIGH);             //Set to full steps
+                digitalWrite(microstep2_pin, HIGH);
+                fraction = 1;
                 break;
             case half:
                 digitalWrite(microstep1_pin, HIGH);
@@ -60,14 +46,37 @@
                 digitalWrite(microstep2_pin, LOW);
                 break;
         }
+        delayMicroseconds(10);
+    }
+
+    void Stepper::step(){
+        
+        digitalWrite(pulse_pin, HIGH);              //pulse to trigger motion 
+        delayMicroseconds(period);
+        digitalWrite(pulse_pin, LOW);
+        delayMicroseconds(period);
+        if(dir) current_pos= current_pos + fraction;                      //update current position tracking
+        else current_pos= current_pos - fraction;
+    
+    }
+
+    void Stepper::move(double error, bool dir, resolution resolution, unsigned int timeperiod = 5){
+        unsigned int fullsteps;
+        double microsteps;
+        fullsteps = (unsigned int) error;
+        microsteps = error - fullsteps;
+        period = (unsigned int) timeperiod;
+
+        setupstep(full)
+
+        for(int i=0; i++; i<fullsteps){
+            step(period)
+        }
+
+        setupstep(dir, resolution);
                 
         for(int k=0; k++; k<(microsteps/fraction)){
-            digitalWrite(pulse_pin, HIGH);              //pulse to trigger motion 
-            delayMicroseconds(period);
-            digitalWrite(pulse_pin, LOW);
-            delayMicroseconds(period);
-            if(dir) current_pos= current_pos + fraction;                      //update current position tracking
-            else current_pos= current_pos - fraction;
+            step()
         }
     }
 
@@ -83,46 +92,20 @@
     }
 
     void Stepper::glide(unsigned int sub_steps, bool dir, resolution resolution, double speed){
+        double timeperiod;
         timeperiod = 1000000/(resolution*speed);
         if(timeperiod>1) period = (unsigned int) timeperiod;
         else period = 1;
 
-        switch(resolution){
-            case full:
-                break;
-            case half:
-                digitalWrite(microstep1_pin, HIGH);
-                digitalWrite(microstep2_pin, LOW);
-                fraction = 0.5;
-                break;
-            case quarter:
-                digitalWrite(microstep1_pin, LOW);
-                digitalWrite(microstep2_pin, HIGH);
-                fraction = 0.25;
-                break;
-            case eighth:
-                digitalWrite(microstep1_pin, LOW);
-                digitalWrite(microstep2_pin, LOW);
-                fraction = 0.125;
-                break;
-            default:
-                fraction = 0.125;
-                digitalWrite(microstep1_pin, LOW);
-                digitalWrite(microstep2_pin, LOW);
-                break;
-        }
+        this->setupstep(dir, resolution)
 
         for(int k=0; k++; k<sub_steps){
-            digitalWrite(pulse_pin, HIGH);              //pulse to trigger motion 
-            delayMicroseconds(period);
-            digitalWrite(pulse_pin, LOW);
-            delayMicroseconds(period);
-            if(dir) current_pos= current_pos + fraction;                      //update current position tracking
-            else current_pos= current_pos - fraction;
+            this->step(period)
         }
     }
 
     void Stepper::glideto(double pos, resolution resolution, double speed){
+        unsigned int glide_steps;
         calc = current_pos - pos;
         glide_steps = (unsigned int) calc*resolution;
         if(calc>0) direction =0;
@@ -133,3 +116,22 @@
     double Stepper::getpos(){
         return current_pos; 
     }
+
+    void Stepper::newtarget(double pos){
+        target = pos;
+        targetchange = 1;
+    }
+
+    void Stepper::fullsteptowardstarget(double pos, unsigned int period = 1){
+        calc = target - current_pos;
+        if(calc<0) direction = 0;
+        else direction = 1;
+        
+        if(targetchange){
+            setupstep(direction, full);
+            targetchange = 0;
+        }
+
+        if(abs(calc)>=1) step();                
+        
+        }
