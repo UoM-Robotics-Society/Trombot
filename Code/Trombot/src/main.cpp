@@ -36,9 +36,9 @@ void setup() {
 //     trombone_note = note;
 // }; 
 
- void loop(){
+void loop(){
   Slide.step_once(1);
- }
+}
 
 // void loop() {
 //   // put your main code here, to run repeatedly:
