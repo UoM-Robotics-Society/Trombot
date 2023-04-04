@@ -49,13 +49,13 @@
         delayMicroseconds(10);
     }
 
-    void Stepper::step(){
+    void Stepper::step_once(unsigned int period=1) {
         
         digitalWrite(pulse_pin, HIGH);              //pulse to trigger motion 
         delayMicroseconds(period);
         digitalWrite(pulse_pin, LOW);
         delayMicroseconds(period);
-        if(dir) current_pos= current_pos + fraction;                      //update current position tracking
+        if(direction) current_pos= current_pos + fraction;                      //update current position tracking
         else current_pos= current_pos - fraction;
     
     }
@@ -67,21 +67,21 @@
         microsteps = error - fullsteps;
         period = (unsigned int) timeperiod;
 
-        setupstep(full)
+        setupstep(dir, full);
 
-        for(int i=0; i++; i<fullsteps){
-            step(period)
+        for(unsigned int i=0; i++; i<fullsteps){
+            step_once(period);
         }
 
         setupstep(dir, resolution);
                 
         for(int k=0; k++; k<(microsteps/fraction)){
-            step()
+            step_once(period);
         }
     }
 
     void Stepper::moveto(double pos, unsigned int period = 5){
-        calc = pos - current_pos;                       //Determine steps and what direction
+        this->calc = pos - current_pos;                       //Determine steps and what direction
         if(calc<0) direction = 0;
         else direction = 1;
         move(abs(calc), direction, eighth, period);      // pulse in that direction
@@ -97,10 +97,10 @@
         if(timeperiod>1) period = (unsigned int) timeperiod;
         else period = 1;
 
-        this->setupstep(dir, resolution)
+        setupstep(dir, resolution);
 
         for(int k=0; k++; k<sub_steps){
-            this->step(period)
+            this->step_once(period);
         }
     }
 
@@ -132,6 +132,6 @@
             targetchange = 0;
         }
 
-        if(abs(calc)>=1) step();                
+        if(abs(calc)>=1) step_once();                
         
         }

@@ -16,7 +16,7 @@ class Stepper{
 
         void setupstep(bool dir, resolution resolution);
 
-        void step(unsigned int period)
+        void step_once(unsigned int period);
 
         void move(double error, bool dir, resolution resolution, unsigned int period);
         //Basic input to drive the stepper. moves a number of steps then microsteps. if not within resolution it will move the closest amount of steps that is capable below the inputted number  
@@ -51,16 +51,16 @@ class Stepper{
         // returns the current position of the stepper as double
 
 
-        void newtarget(double pos)
+        void newtarget(double pos);
 
 
-        void fullsteptowardstarget()
+        void fullsteptowardstarget(double pos, unsigned int period );
         // Moves one step towards target
 
     private:
-        double current_pos, calc, fraction, target;
         int pulse_pin, direction_pin, microstep1_pin, microstep2_pin;
         unsigned int  period;
         bool direction, targetchange;
+        double current_pos, calc, fraction, target;
 
 };
