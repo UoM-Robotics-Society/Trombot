@@ -3,7 +3,7 @@
 //#include "lm/lm.h"
 
 #define Controller_dir 12
-#define Controller_pul 11
+#define Controller_pul 13
 #define Controller_MS1 2
 #define Controller_MS2 3
 
@@ -16,7 +16,7 @@ void setup() {
 
   Slide.setupstep(1, full);
   Serial.begin(9600);
-
+  Slide.newtarget(200);
 }
 
 
@@ -37,7 +37,8 @@ void setup() {
 // }; 
 
 void loop(){
-  Slide.step_once(1);
+  Slide.fullsteptowardstarget(350);
+  
 }
 
 // void loop() {

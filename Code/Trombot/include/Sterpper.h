@@ -14,11 +14,11 @@ class Stepper{
         //@param direction_pin : arduino pin connected of direction/dir of the driver
 
 
-        void setupstep(bool dir, resolution resolution);
+        void setupstep(bool dir, resolution res);
 
         void step_once(unsigned int period);
 
-        void move(double error, bool dir, resolution resolution, unsigned int period);
+        void move(double error, bool dir, resolution res, unsigned int period);
         //Basic input to drive the stepper. moves a number of steps then microsteps. if not within resolution it will move the closest amount of steps that is capable below the inputted number  
         //@param num : number of steps you want to move as a double where 1.0 is a FULL step
         //@param dir : Diretion of steps as a bool value 0 (forward) or 1 (backward) the physical direction orientation depends on the motors wiring so be careful
@@ -35,13 +35,13 @@ class Stepper{
         //@param pos : input position
         
 
-        void glide(unsigned int sub_steps, bool dir, resolution resolution, double speed);
+        void glide(unsigned int sub_steps, bool dir, resolution res, double speed);
         //"Glides" the stepper from one point to another at a constant speed and step size
         //@param sub_steps : number of (micro)steps to move 
         //@param dir : direction as 0 forward and 1 backward
         
 
-        void glideto(double pos, resolution resolution, double speed);
+        void glideto(double pos, resolution res, double speed);
         // moves the stepper at a constant speed at a set resolution to a target position
         //@param pos : input position
         //@param resolution : step size to glide through
@@ -54,11 +54,11 @@ class Stepper{
         void newtarget(double pos);
 
 
-        void fullsteptowardstarget(double pos, unsigned int period );
+        void fullsteptowardstarget(unsigned int period );
         // Moves one step towards target
 
     private:
-        int pulse_pin, direction_pin, microstep1_pin, microstep2_pin;
+        int pul, dir, ms1, ms2;
         unsigned int  period;
         bool direction, targetchange;
         double current_pos, calc, fraction, target;
